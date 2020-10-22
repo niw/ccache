@@ -272,6 +272,8 @@ parse_sloppiness(const std::string& value)
       result |= SLOPPY_LOCALE;
     } else if (token == "modules") {
       result |= SLOPPY_MODULES;
+    } else if (token == "ivfsoverlay") {
+      result |= SLOPPY_IVFOVERLAY;
     } // else: ignore unknown value for forward compatibility
     start = value.find_first_not_of(", ", end);
   }
@@ -311,6 +313,9 @@ format_sloppiness(uint32_t sloppiness)
   }
   if (sloppiness & SLOPPY_MODULES) {
     result += "modules, ";
+  }
+  if (sloppiness & SLOPPY_IVFOVERLAY) {
+    result += "ivfsoverlay, ";
   }
   if (!result.empty()) {
     // Strip last ", ".

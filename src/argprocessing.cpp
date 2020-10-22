@@ -230,6 +230,24 @@ process_arg(Context& ctx,
     return nullopt;
   }
 
+  // Ignore Xcode -ivfsoverlay <path to yaml file>
+  // to not detect multiple input files.
+  if (args[i] == "-ivfsoverlay") {
+    if (!(config.sloppiness() & SLOPPY_IVFOVERLAY)) {
+      LOG_RAW(
+        "You have to specify \"ivfsoverlay\" sloppiness when using"
+        " -ivfsoverlay to get hits");
+      return Statistic::bad_compiler_arguments;
+    }
+    i++;
+    if (i == args.size()) {
+      LOG_RAW("-ivfsoverlay lacks an argument");
+      return Statistic::bad_compiler_arguments;
+    }
+    state.common_args.push_back(args[i]);
+    return nullopt;
+  }
+
   // Special case for -E.
   if (args[i] == "-E") {
     return Statistic::called_for_preprocessing;
